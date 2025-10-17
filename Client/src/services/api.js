@@ -9,6 +9,22 @@ const getAuthHeaders = () => {
   };
 };
 
+// Helper function to handle auth errors
+const handleAuthError = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
+};
+
+// Helper function to check response status
+const checkAuthStatus = (response) => {
+  if (response.status === 401 || response.status === 403) {
+    handleAuthError();
+    throw new Error('Session expired. Please login again.');
+  }
+  return response;
+};
+
 // Auth APIs
 export const register = async (name, email, password) => {
   try {
@@ -65,6 +81,8 @@ export const checkFact = async (claimText) => {
       body: JSON.stringify({ claimText }),
     });
 
+    checkAuthStatus(response);
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || errorData.message || 'Failed to check fact');
@@ -84,6 +102,8 @@ export const getHistory = async () => {
       method: 'GET',
       headers: getAuthHeaders(),
     });
+
+    checkAuthStatus(response);
 
     if (!response.ok) {
       const errorData = await response.json();

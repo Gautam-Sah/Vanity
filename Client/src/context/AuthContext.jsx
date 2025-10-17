@@ -33,11 +33,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
+  const handleAuthError = () => {
+    logout();
+    window.location.href = '/login';
+  };
+
   const value = {
     user,
     token,
     login,
     logout,
+    handleAuthError,
     loading,
     isAuthenticated: !!token,
   };
