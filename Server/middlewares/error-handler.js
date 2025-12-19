@@ -3,8 +3,10 @@ import customAPIError from "../errors/custom-api.js"
 
 const errorHandler = (err, req, res, next) => {
   if (err instanceof customAPIError) {
+    console.log("errorHandler")
     return res.status(err.statusCode).json({ msg: err.message })
   }
+  console.log("errorHandler")
   return res.status(INTERNAL_SERVER_ERROR).json({ msg: "something went wrong" })
 }
 

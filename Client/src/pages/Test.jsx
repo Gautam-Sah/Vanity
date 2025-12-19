@@ -4,13 +4,22 @@ export default function Test() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const response = await fetch(`${API_URL}/file-upload`, {
-      method: "POST",
-      body: new FormData(e.target),
-    })
-    console.log(response)
-    if (!response.ok) {
-      throw new Error("cant be uploaded")
+    try {
+      const res = await fetch(`${API_URL}/file-upload`, {
+        method: "POST",
+        body: new FormData(e.target),
+      })
+
+      const data = await res.json() // <-- IMPORTANT
+
+      if (!res.ok) {
+        console.error("error:", data.msg)
+        return
+      }
+
+      console.log("Success:", data)
+    } catch (err) {
+      console.error("Network/Fetch error:", err.message)
     }
   }
   return (
